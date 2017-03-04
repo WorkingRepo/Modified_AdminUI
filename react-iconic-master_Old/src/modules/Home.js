@@ -10,26 +10,19 @@ import Sample from './Sample'
 
 var Carousel = require('nuka-carousel');
 
-
 class Home extends Component {
-
 
   constructor(){
       super();
       this.state={
                   res:[],load:false,rests:''
                   };
-
     }
-
-
    componentWillMount(){
         fetch('http://localhost:9000/rests').then(response => response.json())
             .then(( json ) => this.setState({res:json}))
             .catch(error => console.log(error));
-
     }
-
 
     componentWillUpdate(){
          fetch('http://localhost:9000/rests').then(response => response.json())
@@ -38,26 +31,18 @@ class Home extends Component {
      }
 
     handleDelete(id){
-    var auth = window.sessionStorage.getItem('token');
-    var email = window.sessionStorage.getItem('email');
-    console.log(email);
-      var r = confirm("Are you sure to Delete ?");
-      console.log(auth);
+
+      var r = confirm("Are you sure to Delete ??");
       if (r == true) {
         fetch('http://localhost:9000/rests/delid/'+id,
         {
           headers :{
             "Content-Type" : "application/json",
-            "Accept" : "application/json",
-            "Authentication" : auth,
-            "id" : email
-
+            "Accept" : "application/json"
             },
           method: 'DELETE'
         })
-
         .then(function (data) {
-
           console.log('Request success: ', data);
           this.setState(load:true);
         })
@@ -69,30 +54,29 @@ class Home extends Component {
 
     handleGo(id)
     {
-      var c=document.getElementById("content2");
+      var c=document.getElementById("content1");
 
       this.setState({rests : this.state.res[id]});
 
-      ReactDOM.render(<Update rests = {this.state.res[id]} />,c);
+      ReactDOM.render(<Update rests = {this.state.res[id]}/>,c);
     }
     handleAdd()
     {
-      var c=document.getElementById("content2");
+      var c=document.getElementById("content1");
       ReactDOM.render(<Add />,c);
     }
     handleSample()
     {
-      var c=document.getElementById("content2");
+      var c=document.getElementById("content1");
       ReactDOM.render(<Sample />,c);
     }
 
     render() {
-
       return (
-      <div className="container" id="content2">
+      <div className="container" id="content1">
 
           <button onClick={() => this.handleAdd()}>Add Restaurant</button>
-
+            <button onClick={() => this.handleSample()}>Sample Restaurant</button>
          <h1>Restaurants List</h1>
           {
 
@@ -116,27 +100,9 @@ class Home extends Component {
                       <button onClick={() => this.handleDelete(ele.id)}>Delete</button>
                 </div>
                  <div className="img-section-space"></div>
-
         </div>
-
       } )}
-      <ul className="pagination">
-    <li className="page-item">
-    <a className="page-link" href="#" aria-label="Previous">
-    <span aria-hidden="true">&laquo;</span>
-    <span className="sr-only">Previous</span>
-    </a>
-    </li>
-    <li className="page-item"><a className="page-link" href="#">1</a></li>
-    <li className="page-item"><a className="page-link" href="#">2</a></li>
-    <li className="page-item"><a className="page-link" href="#">3</a></li>
-    <li className="page-item">
-    <a className="page-link" href="#" aria-label="Next">
-    <span aria-hidden="true">&raquo;</span>
-    <span className="sr-only">Next</span>
-    </a>
-    </li>
-    </ul>
+
       </div>
 
     );

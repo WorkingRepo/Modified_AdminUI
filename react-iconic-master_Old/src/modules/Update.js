@@ -8,30 +8,13 @@ import Home from './Home'
 
 class Update extends Component {
 
-  constructor()
-  {
-      super();
-      this.state={
-                  image : ''
-                  };
-    
-      this.handleSearch=this.handleSearch.bind(this);
-
-
-  }
-
   handlePut(id)
   {
-    var auth = window.sessionStorage.getItem('token');
-    var email = window.sessionStorage.getItem('email');
-
+    console.log(id);
       fetch('http://localhost:9000/rests/update/'+id,
       {
         headers :{
-            "Content-Type" : "application/json",
-            "Accept" :"application/json",
-            "Authentication" : auth,
-            "id" : email
+          "Content-Type" : "application/json"
       },
       method: "PUT",
       body: JSON.stringify({
@@ -39,58 +22,28 @@ class Update extends Component {
          "latitude": latitude.value,
          "otime": otimings.value,
          "ctime": ctimings.value,
-         "image" : this.state.image,
          "address": address.value,
          "homePage": homeurl.value,
          "restName": Rname.value,
          "streetName": Streetname.value,
-         "popular":popular.value,
          "phone": phone.value,
          "faceBook": facebookurl.value,
          "email": email.value
-
         })
      })
      .then(function (data) {
        console.log('Request success: ', data);
-
-           var c=document.getElementById("content2");
-
-           ReactDOM.render(<Home />,c);
      })
      .catch(function (error) {
        console.log('Request failure: ', error);
   });
 
-}
+    var c=document.getElementById("content1");
+
+    ReactDOM.render(<Home />,c);
 
 
- handleSearch(){
-   var x = document.getElementById("myFile");
-   var form = new FormData();
-
-   for (var i = 0; i < x.files.length; i++) {
-        var file = x.files[i];
-        form.set('image',file);
-        console.log(file);
-        fetch('http://localhost:9000/images', {
-                  method: 'POST',
-                  body: form
-          })
-          .then(response => {
-              if(200 == response.status){
-                response.json().then((data) => {
-                  this.setState({image:data});
-                  console.log(this.state.image);
-                  });
-                }
-            })
-            .catch(error => console.log(error));
-
-      }
   }
-
-
   handleMap(){
     var map;
     var marker;
@@ -146,7 +99,7 @@ class Update extends Component {
   render() {
     return (
 
-      <div className="container">
+      <div className="container" id="content1">
         <a name="add"></a>
 
 
@@ -210,15 +163,6 @@ class Update extends Component {
 
                         <div className="col-sm-6" > <label forName="ctimings">Close</label></div>
                         <div className="col-sm-6"> <input type="text" id="ctimings" defaultValue= {this.props.rests.ctime} /></div><br/>
-
-                                 <div className="col-sm-6" > <label forName="popular">Popular</label></div>
-                                 <div className="col-sm-6"> <input type="text" id="popular" defaultValue= {this.props.rests.popular} /></div><br/>
-
-                                 <div className="col-sm-6" > <label forName="image">Image</label></div>
-                                 <input type="file" id="myFile" name="image" multiple="multiple" accept=".png" onChange={this.handleSearch} defaultValue= {this.props.rests.image}/>
-                                                                       <br/><br/>
-
-
 
     			              <center>  <button type="submit" onClick={() => this.handlePut(this.props.rests.id)}>Update</button>   </center>
                         <center>  <button type="submit"  onClick={() => this.handleMap()}>Select On Map </button>   </center>

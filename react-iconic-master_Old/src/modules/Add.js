@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import './css/animate.css';
 import './css/style.css';
 import Home from './Home'
@@ -9,30 +10,19 @@ constructor()
 {
     super();
     this.state={
-                lati:'17.410777',longi:'78.398778',image : ''
+                lati:'17.410777',longi:'78.398778',
                 };
     this.handleAddRes=this.handleAddRes.bind(this);
-    this.handleSearch=this.handleSearch.bind(this);
-
+    this.handleMap=this.handleMap.bind(this);
 
 }
-
-
-  handleAddRes(e)
+  handleAddRes()
   {
-
-    var auth = window.sessionStorage.getItem('token');
-    var email = window.sessionStorage.getItem('email');
-   console.log(auth+"//////");
-   console.log(email+"/////");
     fetch('http://localhost:9000/restsadd',
     {
       headers :{
         "Content-Type" : "application/json",
-        "Accept" :"application/json",
-        "Authentication" : auth,
-        "id" : email
-
+        "Accept" :"application/json"
       },
       method: "POST",
       body: JSON.stringify({
@@ -40,59 +30,28 @@ constructor()
        "latitude": latitude.value,
        "otime": otimings.value,
        "ctime": ctimings.value,
-       "image" : this.state.image,
        "address": address.value,
        "homePage": homeurl.value,
        "restName": Rname.value,
        "streetName": Streetname.value,
-       "popular":popular.value,
        "phone": phone.value,
        "faceBook": facebookurl.value,
        "email": email.value
-
         })
    })
-
    .then(function (data) {
      console.log('Request success: ', data);
-     return <Home/>
-
    })
    .catch(function (error) {
      console.log('Request failure: ', error);
    });
+
+   var c=document.getElementById("content1");
+
+   ReactDOM.render(<Home />,c);
  }
+ handleMap(){
 
-
- handleSearch(){
-   var x = document.getElementById("myFile");
-   var form = new FormData();
-
-   for (var i = 0; i < x.files.length; i++) {
-        var file = x.files[i];
-        form.set('image',file);
-        console.log(file);
-        fetch('http://localhost:9000/images', {
-                  method: 'POST',
-                  body: form
-          })
-          .then(response => {
-              if(200 == response.status){
-                response.json().then((data) => {
-                  this.setState({image:data});
-                  console.log(this.state.image);
-                  });
-                }
-            })
-            .catch(error => console.log(error));
-
-      }
-  }
-
-
-
-
- componentDidMount(){
     if(document.getElementById("latitude").value != '' && document.getElementById("longitude").value != '')
     {
       console.log('hiiiiiiii');
@@ -151,10 +110,9 @@ constructor()
      });
  }
 
-
   render() {
     return (
-      <div className="container" id="con">
+      <div className="container">
 
 
       <div className="top">
@@ -217,21 +175,13 @@ constructor()
          <div className="col-sm-6" > <label forName="ctimings">Close</label></div>
          <div className="col-sm-6"> <input type="text" id="ctimings"/></div><br/>
 
-         <div className="col-sm-6" > <label forName="popular">Popular</label></div>
-         <div className="col-sm-6"> <input type="text" id="popular"/></div><br/>
 
-         <div className="col-sm-6" > <label forName="image">Image</label></div>
-         <input type="file" id="myFile" name="image" multiple="multiple" accept=".png" onChange={this.handleSearch}/>
-                                               <br/><br/>
-
-
-    			 <center>  <button type="submit"  onClick={()=>this.handleAddRes()}>Add</button>   </center>
-
+    			 <center>  <button type="submit"  onClick={this.handleAddRes}>Add</button>   </center>
+           <center>  <button type="submit"  onClick={this.handleMap}>Select On Map </button>   </center>
     			<br/>
-                    <div id="myMap"></div>
          </form>
 
-
+          <div id="myMap"></div>
           </div>
     	</div>
     );

@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import './css/animate.css';
 import './css/style.css';
-import { Link } from 'react-router';
-import Login from './Login';
+import { Link } from 'react-router'
 
 class Register extends Component {
   constructor()
@@ -29,28 +27,25 @@ class Register extends Component {
                             })
      })
      .then(function (data) {
-       var c=document.getElementById("content1");
-       ReactDOM.render(<Login />,c);
   console.log('Request success: ', data);
   })
   .catch(function (error) {
-     window.alert("Registration Unsuccessful");
   console.log('Request failure: ', error);
   });
 
   }
   render() {
     return (
-      <div className="container" id="content1">
+      <div className="container">
       <nav className="navbar navbar-default">
-         <div className="container-fluid">
+     <div className="container-fluid">
 
           <ul className="nav navbar-nav">
          <li><Link to="/login">Login</Link></li>
          <li><Link to="/register">Register</Link></li>
           </ul>
             {this.props.children}
-        </div>
+            </div>
     </nav>
     		<div className="top">
     			<h1 id="title" className="animated fadeInDown"><span id="logo">Admin <span>Register</span></span></h1>
