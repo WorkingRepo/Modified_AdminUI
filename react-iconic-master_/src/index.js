@@ -23,6 +23,7 @@ import Update from './modules/Update'
 import Home from './modules/Home'
 
 
+
 render((
   <Router history={hashHistory}>
     <Route path="/" component={App} />
@@ -32,6 +33,7 @@ render((
     <Route path="/add" component={Add} />
     <Route path="/delete" component={Delete} />
     <Route path="/update" component={Update} />
+  
   </Router>
 
 ), document.getElementById('app'))

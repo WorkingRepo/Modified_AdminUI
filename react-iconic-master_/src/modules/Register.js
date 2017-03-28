@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Route, hashHistory } from 'react-router'
 import './css/animate.css';
 import './css/style.css';
 import { Link } from 'react-router';
@@ -17,7 +16,6 @@ class Register extends Component {
   handlePost()
   {
     this.setState({ searching: true });
-    if(password.value == password1.value){
       fetch('http://localhost:9000/admins',
       {
         headers :{
@@ -33,18 +31,13 @@ class Register extends Component {
      .then(function (data) {
        var c=document.getElementById("content1");
        ReactDOM.render(<Login />,c);
-       hashHistory.push('/Register/');
-
   console.log('Request success: ', data);
   })
   .catch(function (error) {
      window.alert("Registration Unsuccessful");
   console.log('Request failure: ', error);
   });
-}
-else{
-window.alert("Password and confirm Password should be same");
-}
+
   }
   render() {
     return (

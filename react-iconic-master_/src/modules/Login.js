@@ -29,7 +29,6 @@ handleSearch(e){
               this.setState({admin:data});
               //console.log(this.state.admin[0].token);
               var c=document.getElementById("content1");
-
               ReactDOM.render(<Home admin={this.state.admin}/>,c);
               console.log("Success");
               window.sessionStorage.setItem('token', this.state.admin[0].token);
@@ -60,13 +59,13 @@ handleSearch(e){
      <div className="container-fluid">
 
           <ul className="nav navbar-nav">
-            <li><Link to="/login">Login</Link></li>
-            <li><Link to="/register">Register</Link></li>
+         <li><Link to="/login">Login</Link></li>
+         <li><Link to="/register">Register</Link></li>
+
           </ul>
           {this.props.children}
             </div>
     </nav>
-        <a name="login"></a>
     		<div className="top">
     			<h1 id="title" className="animated fadeInDown"><span id="logo">Admin <span>Login</span></span></h1>
     		</div>
@@ -87,7 +86,7 @@ handleSearch(e){
     			<br/>
     			<button type="submit" onClick={this.handleSearch.bind(this)}>Sign In</button>
     			<br/>
-    			
+    			<a href="#Register"><p className="small">Forgot your password?</p></a>
           </form>
 
     		</div>

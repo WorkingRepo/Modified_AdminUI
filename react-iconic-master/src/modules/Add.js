@@ -1,38 +1,79 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import './css/animate.css';
 import './css/style.css';
-import Home from './Home'
-import { Link } from 'react-router'
+import Home from './Home';
+import { Link } from 'react-router';
+import { Router, Route, hashHistory } from 'react-router'
 import 'font-awesome/css/font-awesome.css'
 class Add extends Component {
 constructor()
 {
     super();
     this.state={
-                lati:'17.410777',longi:'78.398778',image : ''
+                lati:'17.410777',longi:'78.398778',image : '',file: '',imagePreviewUrl: ''
                 };
+
     this.handleAddRes=this.handleAddRes.bind(this);
     this.handleSearch=this.handleSearch.bind(this);
-
-
 }
 
 
+_handleImageChange(e) {
+
+  e.preventDefault();
+
+  let reader = new FileReader();
+  let file = e.target.files[0];
+
+  reader.onloadend = () => {
+    this.setState({
+      file: file,
+      imagePreviewUrl: reader.result
+    });
+  }
+
+  reader.readAsDataURL(file);
+
+    var x = document.getElementById("fileInput");
+    var form = new FormData();
+    console.log("hiiiiiiii");
+    for (var i = 0; i < x.files.length; i++) {
+         file = x.files[i];
+         form.set('image',file);
+         console.log(file);
+         fetch('http://localhost:9000/images', {
+                   method: 'POST',
+                   body: form
+           })
+           .then(response => {
+               if(200 == response.status){
+                 response.json().then((data) => {
+                   this.setState({image:data});
+                   console.log(this.state.image);
+                   });
+                 }
+             })
+             .catch(error => console.log(error));
+
+       }
+
+}
+
   handleAddRes(e)
   {
-
+    var post_image = this.state.image;
+    console.log(this.state.image);
     var auth = window.sessionStorage.getItem('token');
-    var email = window.sessionStorage.getItem('email');
-   console.log(auth+"//////");
-   console.log(email+"/////");
+    var email1 = window.sessionStorage.getItem('email');
+
     fetch('http://localhost:9000/restsadd',
     {
       headers :{
         "Content-Type" : "application/json",
         "Accept" :"application/json",
         "Authentication" : auth,
-        "id" : email
-
+        "id" : email1
       },
       method: "POST",
       body: JSON.stringify({
@@ -40,7 +81,7 @@ constructor()
        "latitude": latitude.value,
        "otime": otimings.value,
        "ctime": ctimings.value,
-       "image" : this.state.image,
+       "image" : post_image,
        "address": address.value,
        "homePage": homeurl.value,
        "restName": Rname.value,
@@ -48,21 +89,34 @@ constructor()
        "popular":popular.value,
        "phone": phone.value,
        "faceBook": facebookurl.value,
-       "email": email.value
+       "email": email.value,
+       "highlights":highlights.value,
+       "cuisines":cuisines.value,
+       "description":description.value,
+       "cost":cost.value
 
         })
    })
-
-   .then(function (data) {
+  /* .then(function (data) {
      console.log('Request success: ', data);
-     return <Home/>
+     var c=document.getElementById("content2");
+     ReactDOM.render(<Home />,c);
 
    })
    .catch(function (error) {
      console.log('Request failure: ', error);
+     var c=document.getElementById("content2");
+     ReactDOM.render(<Home />,c);
    });
+   */
+   window.location.reload();
+   hashHistory.push('/Home/');
  }
 
+handleCancel(){
+  var c=document.getElementById("content1");
+  ReactDOM.render(<Home />,c);
+}
 
  handleSearch(){
    var x = document.getElementById("myFile");
@@ -152,90 +206,113 @@ constructor()
  }
 
 
-  render() {
-    return (
-      <div className="container" id="con">
+ render() {
 
 
-      <div className="top">
-        <h1 id="title"><span id="logo">Add Restaurant</span></h1>
-      </div>
-      <div className="login-box1">
-        <div className="box-header">
-          <center><h2 >Add Restaurant</h2></center>
-        </div>
-          <form action="">
-          <br />
-          <div className="col-sm-6" >  <label forName="Rname">Restaurant Name  </label></div>
-          <div className="col-sm-6" >	<input type="text" id="Rname"/> </div><br/>
+       let {imagePreviewUrl} = this.state;
+       let $imagePreview = null;
+       if (imagePreviewUrl) {
+         $imagePreview = (<img src={imagePreviewUrl} />);
+       } else {
+         $imagePreview = (<div className="previewText">Please select an Image for Preview</div>);
+       }
 
 
-          <div className="col-sm-6" >  <label forName="latitute" required>latitute </label></div>
-          <div className="col-sm-6" >	<input type="text" id="latitude" /> </div><br/>
+   return (
 
+     <div className="container" id="content1">
 
-
-          <div className="col-sm-6" > <label forName="longitude">longitude</label></div>
-          <div className="col-sm-6">	<input type="text" id="longitude" /></div><br/>
-
-
-
-          <div className="col-sm-6" ><label forName="Streetname">Street Name</label></div>
-          <div className="col-sm-6">	<input type="text" id="Streetname"/></div><br/>
-
-
-
-          <div className="col-sm-6" ><label forName="address">Address</label></div>
-          <div className="col-sm-6"> <input type="textarea" id="address"/></div><br/>
-
-
-
-          <div className="col-sm-6" ><label forName="phone">Phone</label></div>
-          <div className="col-sm-6"> <input type="text" id="phone"/></div><br/>
-
-
-
-          <div className="col-sm-6" > <label forName="email">Email ID</label></div>
-          <div className="col-sm-6"> <input type="email" id="email"/></div><br/>
-
-
-
-          <div className="col-sm-6" ><label forName="homeurl">HomePage URL</label></div>
-          <div className="col-sm-6"> <input type="text" id="homeurl"/></div><br/>
-
-
-
-          <div className="col-sm-6" ><label forName="facebookurl">Facebook URL</label></div>
-          <div className="col-sm-6"> <input type="text" id="facebookurl" /></div><br/>
-
-         <div><label forName="timings">&nbsp;&nbsp;Timings:</label></div>
-
-         <div className="col-sm-6" ><label forName="otimings">Open</label></div>
-         <div className="col-sm-6"> <input type="text" id="otimings" /></div><br/>
-
-
-         <div className="col-sm-6" > <label forName="ctimings">Close</label></div>
-         <div className="col-sm-6"> <input type="text" id="ctimings"/></div><br/>
-
-         <div className="col-sm-6" > <label forName="popular">Popular</label></div>
-         <div className="col-sm-6"> <input type="text" id="popular"/></div><br/>
-
-         <div className="col-sm-6" > <label forName="image">Image</label></div>
-         <input type="file" id="myFile" name="image" multiple="multiple" accept=".png" onChange={this.handleSearch}/>
-                                               <br/><br/>
-
-
-    			 <center>  <button type="submit"  onClick={()=>this.handleAddRes()}>Add</button>   </center>
-
-    			<br/>
-                    <div id="myMap"></div>
-         </form>
-
-
+     <section className="add" id="add">
+      <div className="container">
+          <div className="row">
+              <div className="col-md-12">
+                  <h2>Add Restaurant</h2>
+              </div>
           </div>
-    	</div>
-    );
-  }
-}
+          <div id="myMap"></div>
+          <br />
+
+          <div className="row">
+              <form name="addform" id="addform">
+                  <div className="col-md-6">
+                      <fieldset>
+
+
+                          <input name="name" type="text" id="Rname" size="30" placeholder="Restaurant Name"/>
+                          <br />
+                          <input name="latitude" type="text" id="latitude" size="30" placeholder="latitude" />
+                          <br />
+                          <input name="longitude" type="text" id="longitude" size="30" placeholder="longitude" />
+                          <br />
+                          <input name="streetName" type="text" id="Streetname" size="30" placeholder="Street Name" />
+                          <br />
+                          <textarea name="address" cols="30" rows="3" id="address" placeholder="Address"></textarea>
+                          <br />
+                          <input name="phone" type="text" id="phone" size="30" placeholder="Phone Number" />
+                          <br />
+                          <input name="email" type="email" id="email" size="30" placeholder="Email Id" />
+                          <br />
+                          <input name="homeurl" type="text" id="homeurl" size="30" placeholder="Homepage Url" />
+                          <br />
+                          <input name="facebookurl" type="text" id="facebookurl" size="30" placeholder="Facebook Url" />
+                          <br />
+                          <input name="otimings" type="text" id="otimings" size="30" placeholder="Open Time" />
+                          <br />
+                          <input name="ctimings" type="text" id="ctimings" size="30" placeholder="Close Time" />
+                          <br />
+                          <input name="popular" type="text" id="popular" size="30" placeholder="Popular" />
+                          <br />
+                          <input name="cost" type="text" id="cost" size="30" placeholder="Price per head" />
+                          <br />
+
+                      </fieldset>
+                  </div>
+                  <div className="col-md-6">
+                      <fieldset>
+                           <textarea name="highlights" cols="30" rows="10" id="highlights" placeholder="Highlights"></textarea>
+                           <br />
+                           <textarea name="description" cols="30" rows="3" id="description" placeholder="Description"></textarea>
+                           <br />
+                           <textarea name="cuisines" cols="30" rows="3" id="cuisines" placeholder="Cuisines"></textarea>
+                           <br />
+
+                           <div className="previewComponent">
+                             <form onSubmit={(e)=>this._handleSubmit(e)}>
+                               <input className="fileInput"
+                                 type="file" id = "fileInput" name = "image"
+                                 onChange={(e)=>this._handleImageChange(e)} />
+
+                             </form>
+                             <div className="imgPreview">
+                             {$imagePreview}
+                             </div>
+                             <br/>
+                           </div>
+
+                      </fieldset>
+                  </div>
+                  <div className="col-md-12">
+                  <div className="col-md-6">
+
+                          <button type="submit" className="btn btn-lg" onClick={()=>this.handleAddRes()} id="submit"> Add </button>
+
+                  </div>
+                  <div className="col-md-6">
+
+                          <button type="submit" className="btn btn-lg" onClick={()=>this.handleCancel()} id="cancel"> Cancel </button>
+
+                  </div>
+                 </div>
+              </form>
+          </div>
+      </div>
+  </section>
+
+     </div>
+   );
+ }
+ }
+
+
 
 export default Add;
